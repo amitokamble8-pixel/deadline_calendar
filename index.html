@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Application Deadlines Calendar</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>Application Deadlines</h1>
+      <span class="subtitle" id="todayLabel"></span>
+    </div>
+    <div class="actions">
+      <button id="addBtn" class="primary">+ Add deadline</button>
+      <div class="menu">
+        <button id="menuBtn" aria-haspopup="true">Data ▾</button>
+        <div class="menu-list" id="menuList" hidden>
+          <button id="importCsvBtn">Import CSV…</button>
+          <button id="exportCsvBtn">Export CSV</button>
+          <button id="exportIcsBtn">Export to calendar (.ics)</button>
+          <button id="resetBtn" class="danger">Reset to default data</button>
+        </div>
+      </div>
+      <input type="file" id="csvInput" accept=".csv,text/csv" hidden />
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <div class="nav">
+      <button id="prevBtn" aria-label="Previous">‹</button>
+      <button id="todayBtn">Today</button>
+      <button id="nextBtn" aria-label="Next">›</button>
+      <h2 id="periodLabel"></h2>
+    </div>
+    <div class="filters">
+      <input type="search" id="searchInput" placeholder="Search university, title, notes…" />
+      <select id="countryFilter"><option value="">All countries</option></select>
+      <select id="typeFilter"><option value="">All types</option></select>
+      <label class="check"><input type="checkbox" id="hideDone" /> Hide completed</label>
+      <div class="seg" role="tablist">
+        <button data-view="month" class="active">Month</button>
+        <button data-view="agenda">List</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="layout">
+    <section id="calendarView" class="calendar"></section>
+    <section id="agendaView" class="agenda" hidden></section>
+
+    <aside class="sidebar">
+      <h3>Coming up</h3>
+      <ul id="upcomingList" class="upcoming"></ul>
+      <h3>Legend</h3>
+      <ul id="legend" class="legend"></ul>
+    </aside>
+  </main>
+
+  <!-- Add / edit dialog -->
+  <dialog id="editDialog">
+    <form id="editForm" method="dialog">
+      <h3 id="dialogTitle">Add deadline</h3>
+      <label>Title* <input name="title" required placeholder="e.g. UCAS application" /></label>
+      <label>University / organisation <input name="institution" placeholder="e.g. University of Edinburgh" /></label>
+      <div class="row">
+        <label>Date* <input type="date" name="date" required /></label>
+        <label>Time <input type="time" name="time" /></label>
+        <label>Time zone <input name="timezone" placeholder="e.g. GMT, ET" /></label>
+      </div>
+      <div class="row">
+        <label>Country <input name="country" list="countryList" placeholder="e.g. UK" /></label>
+        <label>Type
+          <select name="type">
+            <option>Application</option>
+            <option>Early Decision</option>
+            <option>Early Action</option>
+            <option>Regular Decision</option>
+            <option>Admissions test</option>
+            <option>Scholarship</option>
+            <option>Financial aid</option>
+            <option>Interview</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label>Priority
+          <select name="priority">
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+        </label>
+      </div>
+      <label>Link <input type="url" name="link" placeholder="https://…" /></label>
+      <label>Notes <textarea name="notes" rows="3"></textarea></label>
+      <label class="check"><input type="checkbox" name="done" /> Completed</label>
+      <datalist id="countryList"></datalist>
+      <div class="dialog-actions">
+        <button type="button" id="deleteBtn" class="danger" hidden>Delete</button>
+        <span class="spacer"></span>
+        <button type="button" id="cancelBtn">Cancel</button>
+        <button type="submit" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Day detail dialog -->
+  <dialog id="dayDialog">
+    <h3 id="dayTitle"></h3>
+    <ul id="dayList" class="day-list"></ul>
+    <div class="dialog-actions">
+      <button type="button" id="dayAddBtn" class="primary">+ Add on this day</button>
+      <span class="spacer"></span>
+      <button type="button" id="dayCloseBtn">Close</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
